@@ -1,8 +1,12 @@
 // eslint-disable-next-line react/prop-types
-const Button = ({ isSending }) => {
+// import { useFormStatus } from "react-dom";
+
+// eslint-disable-next-line react/prop-types
+const Button = ({ isPending }) => {
+  // const { pending } = useFormStatus();
   return (
     <button className="p-3 text-white  bg-orange-700   rounded-lg self-center">
-      {isSending ? "Sending..." : "Send"}
+      {isPending ? "Sending..." : "Send"}
     </button>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react";
+import { useState, useTransition, useActionState } from "react";
 import { useMessages } from "../hooks/useMessages";
 
 import MessagesBox from "./MessagesBox";
@@ -8,27 +8,22 @@ import { sendMessage } from "../utils/messages";
 const Messanger = () => {
   const { messages, isLoading, error, revalidateHandler } = useMessages();
 
-  //const [isSending, setIsSending] = useState(false);
-  const [errorSending, setErrorSending] = useState(null);
-
-  console.log(errorSending);
-
-  const [isSending, setTransition] = useTransition();
-
-  const handlerSendMessage = async (e) => {
-    setTransition(async () => {
-      e.preventDefault();
+  const [state, formAction, isPending] = useActionState(
+    async (prevFormData, formatData) => {
       try {
-        await sendMessage({ message: e.target.message.value });
+        await sendMessage({ message: formatData.get("message") });
         setErrorSending(null);
       } catch (error) {
         setErrorSending(error.message);
       }
 
-      e.target.message.value = "";
       revalidateHandler();
-    });
-  };
+    },
+    null
+  );
+  console.log(state);
+
+  const [errorSending, setErrorSending] = useState(null);
 
   return (
     <div className="container mx-auto max-w-4xl flex-col sm:flex-row h-screen flex px-4 py-6 gap-4">
@@ -37,16 +32,15 @@ const Messanger = () => {
 
       <form
         className="w-full sm:self-end sm:flex-1 flex flex-wrap space-x-2"
-        onSubmit={handlerSendMessage}
+        action={formAction}
       >
         <textarea
           className=" flex-1 p-3 focus:outline-none border border-1 disabled:bg-slate-100 disabled:text-slate-600"
           placeholder="Write message here..."
           name="message"
           required
-          disabled={isSending}
         ></textarea>
-        <Button isSending={isSending} />
+        <Button isPending={isPending} />
         <span className="text-red-500 w-full font-semibold">
           {errorSending && errorSending}
         </span>
