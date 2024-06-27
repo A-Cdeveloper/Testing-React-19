@@ -1,0 +1,12 @@
+GET http://localhost:8000/messages
+
+###
+
+POST http://localhost:8000/messages
+Content-Type: application/json
+
+  {
+    "message": "hELLO HELLO HELLO"
+    
+  }
+
