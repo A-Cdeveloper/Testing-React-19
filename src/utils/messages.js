@@ -3,7 +3,7 @@ const wait = async () => {
 };
 
 export const getMessages = async () => {
-  //   await wait();
+  //await wait();
   const response = await fetch("http://localhost:8000/messages");
   if (!response.ok) {
     throw new Error("Messages count not be fetch");
@@ -22,7 +22,7 @@ export const sendMessage = async (newMessage) => {
     body: JSON.stringify(newMessage),
   });
   if (!response.ok) {
-    throw new Error("Messages count not be created");
+    throw new Error("Messages couldn't not be created");
   }
   const data = await response.json();
   return data;
