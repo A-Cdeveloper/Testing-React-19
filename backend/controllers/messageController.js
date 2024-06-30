@@ -1,5 +1,5 @@
 exports.getMessages = async (req, res) => {
-  const query = "SELECT * FROM messages ORDER BY time DESC";
+  const query = "SELECT * FROM messages ORDER BY time ASC";
   const [results] = await req.db.query(query);
 
   if (results.length === 0) {
@@ -20,8 +20,8 @@ exports.getMessages = async (req, res) => {
 
 exports.createMessage = async (req, res) => {
   const { message } = req.body;
-  const query = "INSERT INTO messages (message, time) VALUES (?,?)";
-  const [results] = await req.db.query(query, [message, new Date()]);
+  const query = "INSERT INTO messages (message, time, status) VALUES (?,?, ?)";
+  const [results] = await req.db.query(query, [message, new Date(), 1]);
   console.log(results.insertId);
   res.json({
     status: "success",

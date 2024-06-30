@@ -1,37 +1,19 @@
-import { useState } from "react";
 import { getMessages } from "../utils/messages";
-import { useEffect } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 export const useMessages = () => {
-  const [messages, setMessages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
-  const [revalidate, setRevalidate] = useState(false);
+  console.log("render");
+  const { isPending, data, error } = useQuery({
+    queryKey: ["messages"],
+    queryFn: () => getMessages(),
+    placeholderData: keepPreviousData,
+  });
 
-  const revalidateHandler = () => {
-    setRevalidate((prevState) => !prevState);
-  };
-
-  const fetchMessages = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getMessages();
-      setMessages(data.data);
-    } catch (err) {
-      setError(err.message);
-    }
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    console.log("fetch messages");
-    fetchMessages();
-  }, [revalidate]);
+  // console.log(fetchStatus);
 
   return {
-    messages,
-    isLoading,
+    isPending,
+    messages: data?.data || [],
     error,
-    revalidateHandler,
   };
 };
